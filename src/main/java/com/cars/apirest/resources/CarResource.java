@@ -34,7 +34,7 @@ public class CarResource {
         return carRepository.findById(id);
     }
     
-    @GetMapping("/veiculos/cont-not-sold")
+    @GetMapping("/veiculos/nao-vendido")
     public int countNotSold() {
         return carRepository.countCarNotSold();
     }
@@ -101,4 +101,14 @@ public class CarResource {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
+    
+    @GetMapping("/veiculos/por-marca/{brand}")
+    public int listByBrand(@PathVariable("brand") String brand) {
+        return carRepository.countAllByBrand(brand);
+    }
+    
+    @GetMapping("/veiculos/por-decada/{year}")
+    public int listByBrand(@PathVariable("year") int year) {
+        return carRepository.carByYear(year);
+    } 
 }

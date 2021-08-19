@@ -1,5 +1,7 @@
 package com.cars.apirest.repositories;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,8 @@ public interface CarRepository extends JpaRepository<Car, Long> {
     @Query("SELECT COUNT(*) FROM Car WHERE sold = false")
     int countCarNotSold();
     
-    // @Query("SELECT * FROM Car WHERE year >= 1000 AND year <= (1000 + 10)")
-    // int carByYear(@Param("year") int year);
+    int countAllByBrand(String brand);
+    
+    @Query("SELECT COUNT(*) FROM Car WHERE year >= year AND year <= (year + 10)")
+    int carByYear(@Param("year") int year);
 }

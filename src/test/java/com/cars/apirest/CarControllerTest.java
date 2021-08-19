@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.cars.apirest.models.Car;
+import com.cars.apirest.repositories.CarRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,9 +30,46 @@ public class CarControllerTest {
 	@Autowired
 	private ObjectMapper objMapper;
 	
+	@Autowired
+    CarRepository carRepository;
+	
 	@Test
 	public void carTestGetAll() throws Exception {
 		mockMvc.perform(get("/veiculos"))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void carTestCountNotSold() throws Exception {
+		mockMvc.perform(get("/veiculos/nao-vendido"))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void carTestCountByBrand() throws Exception {
+		mockMvc.perform(get("/veiculos/por-marca/Fiat"))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void carTestCountByDec() throws Exception {
+		mockMvc.perform(get("/veiculos/por-decada/1990"))
+				.andExpect(status().isOk());
+	}
+	
+	@Test
+	public void carTestGetById() throws Exception {
+		Car car = new Car();
+		
+		car.setBrand("Fiat");
+		car.setDescription("Fiat uno antigo");
+		car.setSold(false);
+		car.setVehicle("uno");
+		car.setYear(1996);
+		
+		Car newCar = carRepository.save(car);
+		
+		mockMvc.perform(get("/veiculos/" + newCar.getId()))
 				.andExpect(status().isOk());
 	}
 	
@@ -51,5 +89,45 @@ public class CarControllerTest {
 			      .contentType("application/json")
 			      .accept("application/json"))
 				  .andExpect(status().is(202));
+	}
+	
+	@Test
+	public void carTestUpdate() throws Exception {
+		Car car = new Car();
+		
+		car.setBrand("Fiat");
+		car.setDescription("Fiat uno antigo");
+		car.setSold(false);
+		car.setVehicle("uno");
+		car.setYear(1996);
+		
+		Car newCar = carRepository.save(car);
+		
+		mockMvc.perform( MockMvcRequestBuilders
+			      .put("/veiculos/" + newCar.getId())
+			      .content(objMapper.writeValueAsString(car))
+			      .contentType("application/json")
+			      .accept("application/json"))
+				  .andExpect(status().is(200));
+	}
+	
+	@Test
+	public void carTestDelete() throws Exception {
+		Car car = new Car();
+		
+		car.setBrand("Fiat");
+		car.setDescription("Fiat uno antigo");
+		car.setSold(false);
+		car.setVehicle("uno");
+		car.setYear(1996);
+		
+		Car newCar = carRepository.save(car);
+		
+		mockMvc.perform( MockMvcRequestBuilders
+			      .delete("/veiculos/" + newCar.getId())
+			      .content(objMapper.writeValueAsString(car))
+			      .contentType("application/json")
+			      .accept("application/json"))
+				  .andExpect(status().is(200));
 	}
 }
