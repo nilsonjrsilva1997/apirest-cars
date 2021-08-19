@@ -34,6 +34,11 @@ public class CarResource {
         return carRepository.findById(id);
     }
     
+    @GetMapping("/veiculos/cont-not-sold")
+    public int countNotSold() {
+        return carRepository.countCarNotSold();
+    }
+    
     @PostMapping("/veiculos")
     public ResponseEntity<Object> create(@RequestBody Car car) {
     	
